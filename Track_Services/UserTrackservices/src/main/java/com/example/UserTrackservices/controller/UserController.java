@@ -49,11 +49,11 @@ public class UserController {
         return responseEntity;
     }
 
-    @DeleteMapping("/track/delete/{trackId}")
-    public ResponseEntity<?> deleteTrackFromUser(@PathVariable int trackId,@RequestBody User user)throws TrackNotFoundException,UserNotFoundException{
+    @DeleteMapping("/track/delete/{trackId}/{userId}")
+    public ResponseEntity<?> deleteTrackFromUser(@PathVariable(value = "trackId") int trackId,@PathVariable(value = "userId") String userId)throws TrackNotFoundException,UserNotFoundException{
         ResponseEntity responseEntity=null;
         try{
-            responseEntity=new ResponseEntity<>(userService.deleteTrackFromUser(user.getUserId(),trackId),HttpStatus.OK);
+            responseEntity=new ResponseEntity<>(userService.deleteTrackFromUser(userId,trackId),HttpStatus.OK);
         }catch (TrackNotFoundException e){
             throw new TrackNotFoundException();
         }catch (UserNotFoundException e){
@@ -76,4 +76,20 @@ public class UserController {
         }
         return responseEntity;
     }
+
+    @PutMapping("/track/updateTrack/{userId}")
+    public ResponseEntity<?> updateTrackForUser(@PathVariable String userId,@RequestBody Track track) throws UserNotFoundException {
+        ResponseEntity responseEntity = null;
+        try{
+            responseEntity = new ResponseEntity<>(userService.updateTrackForUser(userId,track), HttpStatus.CREATED);
+        }catch (UserNotFoundException e){
+            throw new UserNotFoundException();
+        }catch (Exception e){
+            responseEntity = new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return responseEntity;
+    }
+
+
+
 }
